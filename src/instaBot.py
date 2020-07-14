@@ -24,7 +24,7 @@ class InstagramBot:
         # Open web page
         driver = self.driver
         driver.get("https://www.instagram.com/")
-        sleep(3)
+        sleep(4)
 
         '''# Click login button
         login_button = driver.find_element_by_xpath("//a[@href='/accounts/login/?source=auth_switcher']")
@@ -41,7 +41,7 @@ class InstagramBot:
         if len(self.password) > 1:
             passworword_elem.send_keys(self.password)
             passworword_elem.send_keys(Keys.RETURN)
-            sleep(5)
+            sleep(8)
         else:
             sleep(20)
 
@@ -63,7 +63,7 @@ class InstagramBot:
             try:
                 not_now_button = driver.find_element_by_xpath("//button[@class='aOOlW   HoLwm ']")
                 not_now_button.click()
-                sleep(1)
+                sleep(4)
                 self.navigateToProfile()
                 break
             except Exception:
@@ -364,6 +364,36 @@ class InstagramBot:
 
         comment_txtBox.send_keys(Keys.ENTER)
         sleep(0.5)'''
+
+    # Open chat window from main menu
+    def chatMenu(self):
+        driver = self.driver
+        chat_btn = driver.find_element_by_xpath('//a[@class="xWeGp"]')
+        chat_btn.click()
+        sleep(1)
+    
+    # Return the account with unread chats
+    def getNewChats(self):
+        driver = self.driver
+        chats = driver.find_elements_by_xpath('//div[@class="_7UhW9   xLCgt       qyrsm KV-D4             fDxYl     "]')
+        return [self.get_text(c) for c in chats]
+
+    # Open the chat to talk to a given account
+    def openChat(self, account):
+        driver = self.driver
+        chats = driver.find_elements_by_xpath('//div[@class="_7UhW9   xLCgt       qyrsm KV-D4             fDxYl     "]')
+        matching = [c for c in chats if self.get_text(c) == account][-1]
+        matching.click()
+        sleep(1)
+
+    # Send msg in the chat currently open
+    def sendMsg(self, msg="Hi"):
+        driver = self.driver
+        txtarea = driver.find_element_by_xpath('//textarea[@placeholder="Message..."]')
+        txtarea.click()
+        sleep(0.2)
+        txtarea.send_keys(msg)
+        txtarea.send_keys(Keys.RETURN)
 
     # Closes browser
     def closeBrowser(self):
