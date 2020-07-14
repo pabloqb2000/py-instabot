@@ -1,13 +1,23 @@
 from instaBot import *
 import os
 
-# Print the 'fekas' list of this account (people that arent following you back)
-# Bot must be following this account
+'''
+    
+    Log in with the given account
+    print the list of people that aren't following the given user back
+    (the given account should already be following the user)
+
+'''
 USER = "cristiano_ronaldo"
 
+# Log in
 myBot = InstagramBot(os.environ.get("INSTA_USR"), os.environ.get("INSTA_PWD"))
 myBot.login()
 
+# Print list
 myBot.checkFollowersOf(USER)
 
-print("\n\n\n")
+# Exit safely
+print("\n\nDone!!")
+myBot.closeBrowser()
+input()
