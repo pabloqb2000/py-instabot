@@ -1,6 +1,7 @@
 from instaBot import *
 from tqdm import tqdm
 import os
+from BotAnswers import *
 
 '''
 
@@ -12,23 +13,43 @@ import os
 myBot = InstagramBot(os.environ.get("INSTA_USR"), os.environ.get("INSTA_PWD"))
 myBot.login()
 
+# Create reactor
+reactor = Reactor(myBot, os.environ.get("INSTA_ADMIN"))
+
 # Accept follow requests
 # print("Accepting follows")
 # myBot.acceptFollows()
 
-# Calculate the followers list
-# myBot.setFollowers()
+# Main loop
+while True:
+    # Wait for new messages
+    while not myBot.hasNewChats():
+        sleep(5)
 
-# Open chat
-myBot.chatMenu()
+    # Calculate the followers list
+    myBot.setFollowers()
 
-# Print new chats
-chats = myBot.getNewChats()
-myBot.openChat(chats[-1])
-myBot.sendMsg()
+    # Open chat
+    myBot.chatMenu()
+
+    # Get new chats
+    chats = myBot.getNewChats()
+    if len(chats) > 0:
+        account = chats[-1]
+        myBot.openChat(account)
+
+        # Read messages
+        msgs = myBot.read_msgs()
+        last_msg = msgs[-1]
+
+        # Answer the msg
+        reactor.process(last_msg, account)
+
+    # Go back to the profile
+    myBot.goToProfile()
 
 # Exit safely
 print("Done!!")
 print("Enter any key to continue")
-input()
+raw_input() # use input() for python3
 myBot.closeBrowser()

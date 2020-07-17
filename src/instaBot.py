@@ -111,10 +111,20 @@ class InstagramBot:
         seach_box.send_keys(Keys.RETURN)
         sleep(3)
 
+    # directly goes to the profile of the given account
     def lookForAccount(self, account):
         driver = self.driver
         driver.get("https://www.instagram.com/"+account+"/")
-        sleep(2)
+        sleep(3)
+
+    def followAccount(self, account):
+        driver = self.driver
+        self.lookForAccount(account)
+        follow_btn = driver.find_elements_by_xpath('//button[@class="_5f5mN       jIbKX  _6VtSN     yZn4P   "]')
+        follow_btn = follow_btn + driver.find_elements_by_xpath('//button[@class="BY3EC  sqdOP  L3NKy   y3zKF     "]')
+        if len(follow_btn) > 0:
+            follow_btn[0].click()
+            sleep(1)
 
     # searches the given hastag
     def searchHastag(self, htg):
@@ -180,12 +190,10 @@ class InstagramBot:
             sleep(1)
         following_a = driver.find_elements_by_xpath("//a[@class='FPmhX notranslate  _0imsa ']")
         following = [f.get_property("title") for f in following_a]
-        self.goToProfile()
-        if account != self.username:
-            self.lookForAccount(account)
+        self.lookForAccount(account)
         #close_button = driver.find_element_by_xpath("/html/body/div[4]/div/div[1]/div/div[2]/button/svg")
         #close_button.click()
-        sleep(1)
+        sleep(3)
 
         # Get followers
         following_button = driver.find_element_by_xpath("//a[@href='/" + account + "/followers/']")
@@ -202,9 +210,8 @@ class InstagramBot:
         #close_button = driver.find_element_by_xpath("//span[@class='glyphsSpriteX__outline__24__grey_9 u-__7' and"
         #                                           " @aria-label='Cerrar']")
         #close_button.click()
-        self.goToProfile()
         self.lookForAccount(account)
-        sleep(1)
+        sleep(3)
 
         return following, followers
 
@@ -246,6 +253,27 @@ class InstagramBot:
                 print(f)
 
         self.goToMain()
+    
+    # Return the people that don't follow the given account back
+    # The given account should be followed by the bot
+    def getFekasOf(self, account):
+        driver = self.driver
+        self.lookForAccount(account)
+
+        following, followers = self.getFollowLists(account)
+
+        return [f for f in following if not f in followers]
+
+    # Return the people that follow the given account but the given account doesn't follow back
+    # The given account should be followed by the bot
+    def getCreepiesOf(self, account):
+        driver = self.driver
+        self.lookForAccount(account)
+
+        following, followers = self.getFollowLists(account)
+
+        return [f for f in followers if not f in following]
+
 
     # Likes all post from a given account, use dislike to dislike them
     def likeAll(self, account, dislike=False):
@@ -368,9 +396,14 @@ class InstagramBot:
     # Open chat window from main menu
     def chatMenu(self):
         driver = self.driver
-        chat_btn = driver.find_element_by_xpath('//a[@class="xWeGp"]')
-        chat_btn.click()
-        sleep(1)
+        driver.get("https://www.instagram.com/direct/inbox/")
+        sleep(4)
+
+    # From the profile menu return true if the bot has un read chats
+    def hasNewChats(self):
+        driver = self.driver
+        div = driver.find_elements_by_xpath('//div[@class="J_0ip  Vpz-1  TKi86 "]')
+        return len(div) > 0
     
     # Return the account with unread chats
     def getNewChats(self):
@@ -381,10 +414,22 @@ class InstagramBot:
     # Open the chat to talk to a given account
     def openChat(self, account):
         driver = self.driver
+        
+        # Unread chats
         chats = driver.find_elements_by_xpath('//div[@class="_7UhW9   xLCgt       qyrsm KV-D4             fDxYl     "]')
+        # Read chats
+        chats = chats + driver.find_elements_by_xpath('//div[@class="_7UhW9   xLCgt      MMzan  KV-D4             fDxYl     "]/div/div/div')
+        
         matching = [c for c in chats if self.get_text(c) == account][-1]
         matching.click()
         sleep(1)
+
+    # Read the messages of the currently open chat
+    def read_msgs(self):
+        driver = self.driver
+        msgs = driver.find_elements_by_xpath('//div[@class="                    Igw0E     IwRSH        YBx95       _4EzTm                                                                                   XfCBB            g6RW6               "]/div/span')
+        msgs = [self.get_text(m) for m in msgs]
+        return msgs
 
     # Send msg in the chat currently open
     def sendMsg(self, msg="Hi"):
