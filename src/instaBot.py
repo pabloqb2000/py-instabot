@@ -150,7 +150,7 @@ class InstagramBot:
     def getFollowersNum(self):
         driver = self.driver
         spans = driver.find_elements_by_xpath("//span[@class='g47SY ']")
-        values = [self.get_text(s) for s in spans]
+        values = [self.get_text(s).replace(",", "").replace(".", "") for s in spans]
         return int(values[1]), int(values[2])
 
     # Returns the number of posts of the given account

@@ -21,6 +21,7 @@ reactor = Reactor(myBot, os.environ.get("INSTA_ADMIN"))
 # myBot.acceptFollows()
 
 # Main loop
+print("Starting loop")
 while True:
     # Wait for new messages
     while not myBot.hasNewChats():
