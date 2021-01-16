@@ -427,7 +427,7 @@ class InstagramBot:
     # Read the messages of the currently open chat
     def read_msgs(self):
         driver = self.driver
-        msgs = driver.find_elements_by_xpath('//div[@class="                    Igw0E     IwRSH        YBx95       _4EzTm                                                                                   XfCBB            g6RW6               "]/div/span')
+        msgs = driver.find_elements_by_xpath('//div[@class="                     Igw0E     IwRSH        YBx95       _4EzTm                                                                                   XfCBB            g6RW6               "]/div/span')
         msgs = [self.get_text(m) for m in msgs]
         return msgs
 
