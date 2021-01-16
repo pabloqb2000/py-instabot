@@ -408,7 +408,7 @@ class InstagramBot:
     # Return the account with unread chats
     def getNewChats(self):
         driver = self.driver
-        chats = driver.find_elements_by_xpath('//div[@class="_7UhW9   xLCgt       qyrsm KV-D4             fDxYl     "]')
+        chats = driver.find_elements_by_xpath('//div[@class="_7UhW9   xLCgt       qyrsm KV-D4              fDxYl     "]')
         return [self.get_text(c) for c in chats]
 
     # Open the chat to talk to a given account
@@ -416,9 +416,9 @@ class InstagramBot:
         driver = self.driver
         
         # Unread chats
-        chats = driver.find_elements_by_xpath('//div[@class="_7UhW9   xLCgt       qyrsm KV-D4             fDxYl     "]')
+        chats = driver.find_elements_by_xpath('//div[@class="_7UhW9   xLCgt       qyrsm KV-D4              fDxYl     "]')
         # Read chats
-        chats = chats + driver.find_elements_by_xpath('//div[@class="_7UhW9   xLCgt      MMzan  KV-D4             fDxYl     "]/div/div/div')
+        chats = chats + driver.find_elements_by_xpath('//div[@class="_7UhW9   xLCgt       qyrsm KV-D4              fDxYl     "]/div/div/div')
         
         matching = [c for c in chats if self.get_text(c) == account][-1]
         matching.click()
